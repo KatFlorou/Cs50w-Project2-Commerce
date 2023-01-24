@@ -1,0 +1,18 @@
+{% extends "auctions/layout.html" %}
+
+{% load static %}
+
+
+{% block title %}List an item{% endblock %}
+
+{% block body %}
+    <h2>List an item</h2>
+
+    <form action="{% url 'newlisting' %}" method="post" style="display:grid;">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Save" class="btn btn-dark mt-2 w-25 mx-auto">
+    </form>
+    
+    
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Active Listings</h2>
+    <ul class="list-group">
+    {% if listing %}
+        {% for listing in listings %}
+            <li class="list-group-item">
+                <article style="display:flex">
+                    <div style="width:15%;">
+                        <img src={{listing.image}} alt="" class="img-fluid img-thumbnail mx-auto">
+                    </div>
+                    <div class="pl-2" style="width:80%;">
+                        <h3><a href="{% url 'listing' listing.title %}" class="text-secondary alert-link">{{ listing.title }}</a></h3>
+                        <p style="font-size: 14px;">{{ listing.description }}</p>
+                        {% if listing.currentPrice.last %}
+                            <p style="font-size: 14px;"> Current price: {{ listing.currentPrice.last }}</p>
+                        {% else %}
+                            <p style="font-size: 14px;"> Current price: {{ listing.startingPrice }}</p>
+                        {% endif %}
+                    </div>
+                </article> 
+            </li>
+        {% empty %}
+            <li class="list-group-item">
+                No Listings
+            </li>
+        {% endfor%}
+    {% endif%}
+    </ul>
+{% endblock %}

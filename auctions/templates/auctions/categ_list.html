@@ -1,0 +1,33 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}{{title}}{% endblock %}
+
+{% block body %}
+    <h2>{{title}}</h2>
+
+    <ul class="list-unstyled">
+    {% for x in category_listings %}
+        <li class="list-group-item">
+            <article style="display:flex">
+                <div style="width:15%;">
+                    <img src={{x.image}} alt="" class="img-fluid img-thumbnail mx-auto">
+                </div>
+                <div class="pl-2" style="width:80%;">
+                    <h3><a href="{% url 'listing' x.title %}" class="text-secondary alert-link">{{ x.title }}</a></h3>
+                    <p style="font-size: 14px;">{{ x.description }}</p>
+                    {% if x.currentPrice.last %}
+                        <p style="font-size: 14px;"> Current price: {{ x.currentprice.last }}</p>
+                    {% else %}
+                        <p style="font-size: 14px;"> Current price: {{ x.startingPrice }}</p>
+                    {% endif %}
+                </div>
+            </article> 
+        </li>
+    {% empty %}
+        <li class="list-group-item">
+            There is no item in this category.
+        </li>
+    {% endfor%}
+    </ul>
+    {% endblock %}
+       

@@ -1,0 +1,12 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}ERROR{% endblock %}
+
+{% block body %}
+    <div class="text-center">
+        <h1 class="pt-3 text-danger"><strong>ERROR</strong></h1>
+        <h3 class="pt-5">
+            {{ message }}
+        </h3>
+    </div>
+{% endblock %}

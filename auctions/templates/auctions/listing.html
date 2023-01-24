@@ -1,0 +1,87 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}{{listing.title}}{% endblock %}
+
+{% block body %}
+    <h2 class="text-center font-weight-bold">{{listing.title}}</h2>
+    <div class="d-flex flex-row justify-content-between pt-2 mb-3">
+        <div style="width:200px;" class=" flex-shrink-0">
+            <img class="img-fluid img-thumbnail" src={{listing.image}} alt="an image of the listing item">
+        </div>
+        <p class="text-center p-2 ">{{listing.description}}</p>
+        <div class="border-left rounded p-2 flex-shrink-0" style="width:200px;">
+            <p>Posted by: <strong>{{listing.creator}}</strong></p>
+            <p><a href="{% url 'category_listings' listing.categoryname %}" class="text-secondary alert-link">Category: {{listing.categoryname}}</a></p>
+            <p>Starting price: {{ listing.startingPrice }}</p>
+            <p>Current price: <strong>{{ current_price }}</strong></p>
+            {% if listing.status == True %}
+                <p>Status: <strong class="text-success">Active</strong></p>
+            {% else %}
+                <p>Status: <strong class="text-danger">Closed</strong></p>
+            {% endif %}
+        </div>
+    </div>
+    
+    {% if user.is_authenticated %}
+    <div class="container ml-1">
+        <div class="row align-items-center">
+            <!--Add or Delete from Watchlist-->
+            <form action="{% url 'watchlist' %}" method="post">
+            {% csrf_token %}
+                {{form}}
+                <input type="text" name="item" value={{listing.pk}} hidden>
+                {% if listing in watching %}
+                    <button type="submit" name="action" value="delete" class="btn btn-dark mt-2 col-md-auto mr-2">Delete from Watchlist</button>
+                {% else %}
+                    <button type="submit" name="action" value="add" class="btn btn-dark mt-2 col-md-auto mr-2">Add to Watchlist</button>
+                {% endif %}
+            </form>
+            <!-- Bid  and  Close Biding-->
+            {% if listing.status == True %}
+                {% if user == listing.creator %}
+                <form action="{% url 'listing' listing.title%}" method="post"> {% csrf_token %}
+                    <button class="btn btn-dark mt-2 col-md-auto mr-2" name="closestatus" value='False'>Close the biding</button>
+                </form>
+                {% else %}
+                    <button class="btn btn-dark mt-2 col-md-auto mr-2" onclick="showHiddenItem2()">Place your Bid</button>
+                {% endif %}
+            {% else %}
+                {% if user == lastbider %}
+                <p class="border border-danger rounded mr-2 col-md-auto align-self-end mt-4 text-danger font-weight-bold" style="padding: .375rem .75rem;">Congradulations, this item is yours!!!</p>
+                {% endif %}
+            {% endif %}
+            <button type="button" class="btn btn-dark mt-2 col-md-auto" onclick="showHiddenItem()">Write a comment about this item</button>
+        </div>
+        <!--Biding-->
+        <div class="pt-2" id="hiddenitem2" style="display:none">
+            <form action="{% url 'listing' listing.title%}" method="post" class="d-flex flex-row justify-content-center w-50 mx-auto">
+                {% csrf_token %}
+                {{ form3 }}
+                <button type="submit" class="mt-0 d-block btn btn-dark w-25 mx-auto align-self-center">Bid</button>
+            </form>
+        </div>
+        <!--Commenting-->
+        <div class="pt-2" id="hiddenitem" style="display:none">
+            <form action="{% url 'listing' listing.title%}" method="post" class="d-flex flex-column justify-content-center w-75 mx-auto">
+                {% csrf_token %}
+                {{ form2 }}
+                <button type="submit" class="mt-2 d-block btn btn-dark w-25 mx-auto">Save</button>
+            </form>
+        </div>
+    {% endif %}
+    </div>
+    <section class="mt-2">
+        <p><strong>Comments:</strong></p>
+        <ul class="list-unstyled">
+        {% for comment in comments %}
+            <li>
+                <div class="border rounded mt-2 p-2 w-50">
+                    <p style="font-size:small;">Posted by: <strong>{{ comment.person }}</strong></p>
+                    <p> {{ comment.opinion }} </p>
+                </div>
+            </li>
+        {% endfor %}
+        </ul>
+    </section>
+{% endblock %}
+
